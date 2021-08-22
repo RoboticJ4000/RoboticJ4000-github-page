@@ -8,7 +8,7 @@ In the project directory, you can run:
 
 ### `npm run deploy`
 
-Builds the app as the deployment of Github Pages.
+Builds the app as the deployment of Github Pages.\
 See the npm section on [gh-pages](https://www.npmjs.com/package/gh-pages) for more details.
 
 ### `npm start`
