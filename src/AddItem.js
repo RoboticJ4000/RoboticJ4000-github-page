@@ -96,7 +96,7 @@ class AddItem extends React.Component {
             mainAb = stackAb.concat(AddItem.shoesAb.map(this.createOption));
         }
 
-        const subAb = stackAb.concat(<option value="empty">Empty</option>);
+        const subAb = stackAb.concat(<option key="empty" value="empty">Empty</option>);
 
 
         /*
@@ -114,9 +114,9 @@ class AddItem extends React.Component {
 
                     <label>Type:</label>
                     <select name="type" value={this.state.type} onChange={this.handleChange}>
-                        <option value="headgear">Headgear</option>
-                        <option value="clothing">Clothing</option>
-                        <option value="shoes">Shoes</option>
+                        <option key="headgear" value="headgear">Headgear</option>
+                        <option key="clothing" value="clothing">Clothing</option>
+                        <option key="shoes" value="shoes">Shoes</option>
                     </select>
                 </div>
                 
