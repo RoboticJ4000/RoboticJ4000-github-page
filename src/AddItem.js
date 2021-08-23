@@ -110,6 +110,8 @@ class AddItem extends React.Component {
         return (this.props.isShown &&
             <form onSubmit={this.handleSubmit}>
                 <div>
+                    <h1>Add Gear</h1>
+
                     <label>Type:</label>
                     <select name="type" value={this.state.type} onChange={this.handleChange}>
                         <option value="headgear">Headgear</option>
@@ -148,7 +150,7 @@ class AddItem extends React.Component {
                 </div>
             
                 <div>
-                    <input type="submit" value="Submit"/>
+                    <input type="submit" value="Add"/>
                 </div>
                 
             </form>
