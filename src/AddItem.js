@@ -28,7 +28,7 @@ class AddItem extends React.Component {
         'Quick Respawn',
         'Quick Super Jump',
         'Sub Power Up',
-        'Ink Resistance',
+        'Ink Resistance Up',
         'Bomb Defense Up DX',
         'Main Power Up'
     ];
@@ -62,38 +62,38 @@ class AddItem extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log("Submitted");
-    }
-
-    createOption(string) {
-        const fixed = string.charAt(0).toLowerCase().concat(string.substring(1));
-        
-        let shortened = '';
-        const alphaRegex = new RegExp('[a-zA-Z]');
-
-        for (let char of fixed){
-            if (alphaRegex.test(char)){
-                shortened += char;
-            }
-        }
-
-        return (
-            <option key={shortened} value={shortened}>{string}</option>
-        );
+        this.props.addGear(this.state);
     }
 
     render(){
-        const stackAb = AddItem.stackAb.map(this.createOption);
+        function createOption(string) {
+            const fixed = string.charAt(0).toLowerCase().concat(string.substring(1));
+            
+            let shortened = '';
+            const alphaRegex = new RegExp('[a-zA-Z]');
+    
+            for (let char of fixed){
+                if (alphaRegex.test(char)){
+                    shortened += char;
+                }
+            }
+    
+            return (
+                <option key={shortened} value={shortened}>{string}</option>
+            );
+        }
+
+        const stackAb = AddItem.stackAb.map(createOption);
 
         let mainAb;
         if (this.state.type === 'headgear'){
-            mainAb = stackAb.concat(AddItem.headgearAb.map(this.createOption));
+            mainAb = stackAb.concat(AddItem.headgearAb.map(createOption));
 
         } else if (this.state.type === 'clothing'){
-            mainAb = stackAb.concat(AddItem.clothingAb.map(this.createOption));
+            mainAb = stackAb.concat(AddItem.clothingAb.map(createOption));
         
         } else {
-            mainAb = stackAb.concat(AddItem.shoesAb.map(this.createOption));
+            mainAb = stackAb.concat(AddItem.shoesAb.map(createOption));
         }
 
         const subAb = stackAb.concat(<option key="empty" value="empty">Empty</option>);
