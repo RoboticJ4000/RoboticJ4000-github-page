@@ -1,23 +1,22 @@
 {
   "files": {
-    "main.css": "/RoboticJ4000-github-page/static/css/main.a617e044.chunk.css",
-    "main.js": "/RoboticJ4000-github-page/static/js/main.c77981d4.chunk.js",
-    "main.js.map": "/RoboticJ4000-github-page/static/js/main.c77981d4.chunk.js.map",
-    "runtime-main.js": "/RoboticJ4000-github-page/static/js/runtime-main.b457c7b8.js",
-    "runtime-main.js.map": "/RoboticJ4000-github-page/static/js/runtime-main.b457c7b8.js.map",
-    "static/js/2.0d3d1a5b.chunk.js": "/RoboticJ4000-github-page/static/js/2.0d3d1a5b.chunk.js",
-    "static/js/2.0d3d1a5b.chunk.js.map": "/RoboticJ4000-github-page/static/js/2.0d3d1a5b.chunk.js.map",
-    "static/js/3.c48478e5.chunk.js": "/RoboticJ4000-github-page/static/js/3.c48478e5.chunk.js",
-    "static/js/3.c48478e5.chunk.js.map": "/RoboticJ4000-github-page/static/js/3.c48478e5.chunk.js.map",
+    "main.css": "/RoboticJ4000-github-page/static/css/main.22b6e383.chunk.css",
+    "main.js": "/RoboticJ4000-github-page/static/js/main.ec76ba46.chunk.js",
+    "main.js.map": "/RoboticJ4000-github-page/static/js/main.ec76ba46.chunk.js.map",
+    "runtime-main.js": "/RoboticJ4000-github-page/static/js/runtime-main.b790776a.js",
+    "runtime-main.js.map": "/RoboticJ4000-github-page/static/js/runtime-main.b790776a.js.map",
+    "static/js/2.160043dc.chunk.js": "/RoboticJ4000-github-page/static/js/2.160043dc.chunk.js",
+    "static/js/2.160043dc.chunk.js.map": "/RoboticJ4000-github-page/static/js/2.160043dc.chunk.js.map",
+    "static/js/3.ff2b8763.chunk.js": "/RoboticJ4000-github-page/static/js/3.ff2b8763.chunk.js",
+    "static/js/3.ff2b8763.chunk.js.map": "/RoboticJ4000-github-page/static/js/3.ff2b8763.chunk.js.map",
     "index.html": "/RoboticJ4000-github-page/index.html",
-    "static/css/main.a617e044.chunk.css.map": "/RoboticJ4000-github-page/static/css/main.a617e044.chunk.css.map",
-    "static/js/2.0d3d1a5b.chunk.js.LICENSE.txt": "/RoboticJ4000-github-page/static/js/2.0d3d1a5b.chunk.js.LICENSE.txt",
-    "static/media/logo.6ce24c58.svg": "/RoboticJ4000-github-page/static/media/logo.6ce24c58.svg"
+    "static/css/main.22b6e383.chunk.css.map": "/RoboticJ4000-github-page/static/css/main.22b6e383.chunk.css.map",
+    "static/js/2.160043dc.chunk.js.LICENSE.txt": "/RoboticJ4000-github-page/static/js/2.160043dc.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.b457c7b8.js",
-    "static/js/2.0d3d1a5b.chunk.js",
-    "static/css/main.a617e044.chunk.css",
-    "static/js/main.c77981d4.chunk.js"
+    "static/js/runtime-main.b790776a.js",
+    "static/js/2.160043dc.chunk.js",
+    "static/css/main.22b6e383.chunk.css",
+    "static/js/main.ec76ba46.chunk.js"
   ]
 }
