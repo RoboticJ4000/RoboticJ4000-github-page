@@ -1,5 +1,6 @@
 import './App.css';
 import AddItem from './AddItem.js';
+import SearchItem from './SearchItem.js'
 import Display from './Display.js';
 import React from 'react';
 
@@ -8,10 +9,12 @@ class App extends React.Component {
         super(props);
         this.state = {
             showAddItem: false,
+            showSearchItem: false,
             gearArray: []
         };
 
         this.toggleAddItem = this.toggleAddItem.bind(this);
+        this.toggleSearchItem = this.toggleSearchItem.bind(this);
         this.resetDatabase = this.resetDatabase.bind(this);
         this.queryDB = this.queryDB.bind(this);
         this.addGear = this.addGear.bind(this);
@@ -22,21 +25,22 @@ class App extends React.Component {
         this.displayGear();
     }
 
-    toggleAddItem(event) {
+    toggleAddItem() {
         this.setState( {showAddItem: !this.state.showAddItem} );
     }
 
-    resetDatabase(event) {
-        let deleteRequest = indexedDB.deleteDatabase('database');
+    toggleSearchItem(){
+        this.setState( {showSearchItem: !this.state.showSearchItem} );
+    }
 
-        deleteRequest.onerror = function() {
-            console.error('Failed to delete database', deleteRequest.error);
+    // Go for multiple removes instead for performance?
+    resetDatabase() {
+        let func = function(db) {
+            let gears = db.transaction('gears', 'readwrite').objectStore('gears');
+            gears.clear();
         }
 
-        deleteRequest.onsuccess = function() {
-            console.log('Database deleted');
-        }
-
+        this.queryDB(func, this);
         this.displayGear();
     }
 
@@ -108,9 +112,17 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <button onClick={this.toggleAddItem}>Toggle Add Gear Form</button>
-                <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
-                <AddItem isShown={this.state.showAddItem} addGear={this.addGear} />
+                <div>
+                    <button onClick={this.toggleAddItem}>Toggle Add Gear Form</button>
+                    <button onClick={this.toggleSearchItem}>Toggle Search Gear Form</button>
+                    <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
+                </div>
+                
+                <div>
+                    {this.state.showAddItem && <AddItem addGear={this.addGear} />}
+                    {this.state.showSearchItem && <SearchItem />}
+                </div>
+                
                 <Display gearArray={this.state.gearArray} />
             </div>
         );
