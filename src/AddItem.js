@@ -11,7 +11,7 @@ class AddItem extends React.Component {
             sub1: 'empty',
             sub2: 'empty',
             sub3: 'empty'
-        };
+        };      // State represents a piece of gear.
 
 
         this.handleChange = this.handleChange.bind(this);

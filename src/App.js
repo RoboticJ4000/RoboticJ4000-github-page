@@ -10,6 +10,7 @@ class App extends React.Component {
         this.state = {
             showAddItem: false,
             showSearchItem: false,
+            gearFilter: {},
             gearArray: []
         };
 
@@ -18,6 +19,7 @@ class App extends React.Component {
         this.resetDatabase = this.resetDatabase.bind(this);
         this.queryDB = this.queryDB.bind(this);
         this.addGear = this.addGear.bind(this);
+        this.setFilter = this.setFilter.bind(this);
         this.displayGear = this.displayGear.bind(this);
     }
 
@@ -33,17 +35,6 @@ class App extends React.Component {
         this.setState( {showSearchItem: !this.state.showSearchItem} );
     }
 
-    // Go for multiple removes instead for performance?
-    resetDatabase() {
-        let func = function(db) {
-            let gears = db.transaction('gears', 'readwrite').objectStore('gears');
-            gears.clear();
-        }
-
-        this.queryDB(func, this);
-        this.displayGear();
-    }
-
     queryDB(func, thisArg) {
         let openRequest = indexedDB.open('database', 1);
     
@@ -51,10 +42,7 @@ class App extends React.Component {
             let db = openRequest.result;
             if (!db.objectStoreNames.contains('gears')) {
                 let gears = db.createObjectStore('gears', {keyPath: 'name'});
-                gears.createIndex('typeIndex', 'type');
                 gears.createIndex('nameIndex', 'name', {unique: true});
-                gears.createIndex('gearsIndex', 'main');
-                gears.createIndex('subIndex', ['sub1', 'sub2', 'sub3']);
             }
         }
     
@@ -89,27 +77,85 @@ class App extends React.Component {
         this.displayGear();
     }
 
+    setFilter(gear){
+        this.setState(
+            {gearFilter: gear},
+            () => (this.displayGear())      // Synchronously call displayGear().
+        );
+    }
+
     displayGear() {
         let context = this;
+        let func;
 
+        if (Object.keys(this.state.gearFilter).length === 0) {
+            func = function(db) {
+                let gears = db.transaction('gears', 'readonly').objectStore('gears');
+    
+                let request = gears.getAll();
+    
+                request.onerror = function() {
+                    console.error('Failed to retrieve all gear', request.error);
+                }
+    
+                request.onsuccess = function() {
+                    context.setState({gearArray: request.result});
+                }
+            }
+
+        } else {
+            func = function(db) {
+                let gears = db.transaction('gears', 'readonly').objectStore('gears');
+                
+                let filter = this.state.gearFilter;
+                let array = [];
+
+                let request = gears.openCursor();
+
+                request.onsuccess = function() {    // Called for each cursor item.
+                    let cursor = request.result;
+                    
+                    if (cursor) {   // A 'hasNext' type of deal.
+                        let gear = cursor.value;
+                        let subs = [gear.sub1, gear.sub2, gear.sub3];
+
+                        if (
+                            (filter.type === 'blank' || gear.type === filter.type) &&
+                            (!filter.name || gear.name.includes(filter.name)) &&
+                            (filter.main === 'blank' || gear.main === filter.main) &&
+                            (filter.sub1 === 'blank' || subs.includes(filter.sub1)) &&
+                            (filter.sub2 === 'blank' || subs.includes(filter.sub2)) &&
+                            (filter.sub3 === 'blank' || subs.includes(filter.sub3))
+                        ) {
+                            array.push(gear);
+                        }
+
+                        cursor.continue();
+                    } else {
+                        context.setState({gearArray: array});
+                    }
+                }
+            }
+        }
+    
+        this.queryDB(func, this);
+    }
+
+    resetDatabase() {
         let func = function(db) {
-            let gears = db.transaction('gears', 'readonly').objectStore('gears');
-
-            let request = gears.getAll();
-
-            request.onerror = function() {
-                console.error('Failed to retrieve all gear', request.error);
-            }
-
-            request.onsuccess = function() {
-                context.setState({gearArray: request.result});
-            }
+            let gears = db.transaction('gears', 'readwrite').objectStore('gears');
+            gears.clear();
+            // indexedDB.deleteDatabase('gears');
         }
 
         this.queryDB(func, this);
+        this.setState({gearFilter: {}});
+        this.displayGear();
     }
   
     render() {
+        // TODO: Alerts for each action.
+
         return (
             <div className="App">
                 <div>
@@ -120,7 +166,7 @@ class App extends React.Component {
                 
                 <div>
                     {this.state.showAddItem && <AddItem addGear={this.addGear} />}
-                    {this.state.showSearchItem && <SearchItem />}
+                    {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
                 </div>
                 
                 <Display gearArray={this.state.gearArray} />

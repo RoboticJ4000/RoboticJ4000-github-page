@@ -4,20 +4,22 @@ import GearForm from './GearForm';
 class SearchItem extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            type: 'headgear',
-            name: '',
-            main: 'empty',
-            sub1: 'empty',
-            sub2: 'empty',
-            sub3: 'empty'
-        };
+        this.state = SearchItem.initialState;   // State represents a piece of gear.
 
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);  
         this.resetForm = this.resetForm.bind(this); 
     }
+
+    static initialState = {
+        type: 'blank',
+        name: '',
+        main: 'blank',
+        sub1: 'blank',
+        sub2: 'blank',
+        sub3: 'blank'
+    };
 
     handleChange(event){
         this.setState({
@@ -28,17 +30,26 @@ class SearchItem extends React.Component {
     handleSubmit(event){
         event.preventDefault();
         
+        console.log(this.state);
+
+        // Check if submitted values are the same as 'blank' values.
+        let filterValues = Object.values(this.state);
+        let initialValues = Object.values(SearchItem.initialState);
+        let bool = true;
+
+        for (let i = 0; i < initialValues.length; i++){
+            bool = bool && filterValues[i] === initialValues[i];
+        }
+
+        if (bool) {
+            this.props.setFilter({});
+        } else {
+            this.props.setFilter(this.state);
+        }
     }
 
     resetForm(){
-        this.setState({
-            type: 'headgear',
-            name: '',
-            main: 'empty',
-            sub1: 'empty',
-            sub2: 'empty',
-            sub3: 'empty'
-        });
+        this.setState(SearchItem.initialState);
     }
 
     render(){
@@ -48,7 +59,7 @@ class SearchItem extends React.Component {
                 handleChange={this.handleChange}
                 handleSubmit={this.handleSubmit}
                 submitText="Search"
-                allowEmptyMain={true}>
+                allowBlank={true}>
                 <button onClick={this.resetForm}>Reset</button>
             </GearForm>
         );

@@ -6,6 +6,12 @@ class GearForm extends React.Component {
         this.state = {};
     }
 
+    static type = [
+        'Headgear',
+        'Clothing',
+        'Shoes'
+    ];
+
     static stackAb = [
         'Ink Saver (Main)',         
         'Ink Saver (Sub)',
@@ -45,6 +51,7 @@ class GearForm extends React.Component {
     ];
 
     static empty = <option key="empty" value="empty">Empty</option>;
+    static blank = <option key="blank" value="blank"/>
 
     render(){
         function createOption(string) {
@@ -64,7 +71,9 @@ class GearForm extends React.Component {
             );
         }
 
-        const stackAb = GearForm.stackAb.map(createOption);
+        let stackAb = GearForm.stackAb.map(createOption);
+
+        let type = GearForm.type.map(createOption);
 
         let mainAb;
         if (this.state.type === 'headgear'){
@@ -77,11 +86,13 @@ class GearForm extends React.Component {
             mainAb = stackAb.concat(GearForm.shoesAb.map(createOption));
         }
 
-        if (this.props.allowEmptyMain){
-            mainAb = mainAb.concat(GearForm.empty);
-        }
+        stackAb.push(GearForm.empty);
 
-        const subAb = stackAb.concat(GearForm.empty);
+        if (this.props.allowBlank){
+            mainAb.push(GearForm.blank);
+            stackAb.push(GearForm.blank);
+            type.push(GearForm.blank);
+        }        
 
         return (
             <form onSubmit={(event) => this.props.handleSubmit(event)}>
@@ -90,9 +101,7 @@ class GearForm extends React.Component {
 
                     <label>Type:</label>
                     <select name="type" value={this.props.gear.type} onChange={(event) => this.props.handleChange(event)}>
-                        <option key="headgear" value="headgear">Headgear</option>
-                        <option key="clothing" value="clothing">Clothing</option>
-                        <option key="shoes" value="shoes">Shoes</option>
+                        {type}
                     </select>
                 </div>
                 
@@ -112,15 +121,15 @@ class GearForm extends React.Component {
                     <label>Sub Abilities:</label>
                     <div className="Sub-Abilities">
                         <select className="Sub-Ab" name="sub1" value={this.props.gear.sub1} onChange={(event) => this.props.handleChange(event)}>
-                            {subAb}
+                            {stackAb}
                         </select>
 
                         <select className="Sub-Ab" name="sub2" value={this.props.gear.sub2} onChange={(event) => this.props.handleChange(event)}>
-                            {subAb}
+                            {stackAb}
                         </select>
 
                         <select className="Sub-Ab" name="sub3" value={this.props.gear.sub3} onChange={(event) => this.props.handleChange(event)}>
-                            {subAb}
+                            {stackAb}
                         </select>
                     </div>
                 </div>
