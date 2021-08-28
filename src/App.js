@@ -11,15 +11,18 @@ class App extends React.Component {
             showAddItem: false,
             showSearchItem: false,
             gearFilter: {},
-            gearArray: []
+            gearArray: [],
+            gearSelected: undefined
         };
 
         this.toggleAddItem = this.toggleAddItem.bind(this);
         this.toggleSearchItem = this.toggleSearchItem.bind(this);
+        this.selectGear = this.selectGear.bind(this);
         this.resetDatabase = this.resetDatabase.bind(this);
         this.queryDB = this.queryDB.bind(this);
         this.addGear = this.addGear.bind(this);
         this.setFilter = this.setFilter.bind(this);
+        this.removeGear = this.removeGear.bind(this);
         this.displayGear = this.displayGear.bind(this);
     }
 
@@ -28,11 +31,21 @@ class App extends React.Component {
     }
 
     toggleAddItem() {
-        this.setState( {showAddItem: !this.state.showAddItem} );
+        this.setState( {
+            showAddItem: !this.state.showAddItem,
+            showSearchItem: false
+        } );
     }
 
     toggleSearchItem(){
-        this.setState( {showSearchItem: !this.state.showSearchItem} );
+        this.setState( {
+            showAddItem: false,
+            showSearchItem: !this.state.showSearchItem
+        } );
+    }
+
+    selectGear(gearName){
+        this.setState( {gearSelected: gearName} );
     }
 
     queryDB(func, thisArg) {
@@ -65,11 +78,11 @@ class App extends React.Component {
             let request = gears.add(gear);
 
             request.onerror = function() {
-                console.error('Failed to add gear to database', request.error);
+                window.alert('Cannot add the gear to the database.\nGear must have unique names.');
             }
 
             request.onsuccess = function() {
-                console.log(gear + ' was added to database');
+                window.alert('"' + gear.name + '" was added to database.');
             }
         }
 
@@ -84,12 +97,32 @@ class App extends React.Component {
         );
     }
 
+    removeGear() {
+        if (this.state.gearSelected) {
+            let func = function(db) {
+                let gears = db.transaction('gears', 'readwrite').objectStore('gears');
+    
+                gears.delete(this.state.gearSelected);
+    
+                window.alert('"' + this.state.gearSelected + '" was removed from the database');
+                this.setState( {gearSelected: undefined} );
+            }
+    
+            this.queryDB(func, this);
+            this.displayGear();
+        } else {
+            window.alert('No gear was selected.\nNothing was removed from the database.')
+        }
+        
+    }
+
     displayGear() {
         let context = this;
         let func;
 
         if (Object.keys(this.state.gearFilter).length === 0) {
             func = function(db) {
+                // Sort by gear type?
                 let gears = db.transaction('gears', 'readonly').objectStore('gears');
     
                 let request = gears.getAll();
@@ -155,12 +188,14 @@ class App extends React.Component {
   
     render() {
         // TODO: Alerts for each action.
+        // TODO: Select gear via click, remove (and maybe edit) gear button.
 
         return (
             <div className="App">
                 <div>
-                    <button onClick={this.toggleAddItem}>Toggle Add Gear Form</button>
-                    <button onClick={this.toggleSearchItem}>Toggle Search Gear Form</button>
+                    <button onClick={this.toggleAddItem}>Add Gear</button>
+                    <button onClick={this.toggleSearchItem}>Search Gear</button>
+                    <button onClick={this.removeGear}>Remove Selected Gear</button>
                     <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
                 </div>
                 
@@ -169,14 +204,16 @@ class App extends React.Component {
                     {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
                 </div>
                 
-                <Display gearArray={this.state.gearArray} />
+                <Display gearArray={this.state.gearArray} selectGear={this.selectGear} gearSelected={this.state.gearSelected} />
+
+                <footer>
+                    This React app is incomplete. Development is ongoing.<br/>
+                    <br/>
+                    This React app is in no way affilated with Nintendo. None of the images used in this app are owned by the creator.
+                </footer>
             </div>
         );
     }
 }
 
 export default App;
-/*
- * Notes:
- *  Use js localStorage for data storage
- */

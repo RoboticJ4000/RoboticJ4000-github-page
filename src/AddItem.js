@@ -26,7 +26,13 @@ class AddItem extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.addGear(this.state);
+
+        if (this.state.name) {
+            this.props.addGear(this.state);
+
+        } else {
+            window.alert("Gear has no name.\nAll gear must have a name.\nNo gear was added to the database.")
+        }
     }
 
     render(){

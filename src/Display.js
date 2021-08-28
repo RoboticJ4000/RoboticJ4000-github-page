@@ -8,7 +8,9 @@ class Display extends React.Component {
     }
 
     render(){
-        let gearEntries = this.props.gearArray.map((gearObj) => <GearDisplay key={gearObj.name} gear={gearObj}/>);
+        let gearEntries = this.props.gearArray.map((gearObj) =>
+            <GearDisplay key={gearObj.name} gear={gearObj}
+            selectGear={this.props.selectGear} selected={gearObj.name === this.props.gearSelected}/>);
 
         return (
             <table>

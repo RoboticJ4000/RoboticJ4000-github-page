@@ -4,11 +4,25 @@ class GearDisplay extends React.Component {
     constructor(props){
         super(props);
         this.state = {};
+
+        this.onClick = this.onClick.bind(this);
     }
 
+    onClick(){
+        this.props.selectGear(this.props.gear.name);
+    };
+
     render(){
+        const selected = {
+            color: 'red'
+        };
+
+        const notSelected = {
+            color: 'black'
+        };
+
         return (
-            <tr>
+            <tr style={this.props.selected ? selected : notSelected} onClick={this.onClick}>
                 <td headers="type">{this.props.gear.type}</td>
                 <td headers="name">{this.props.gear.name}</td>
                 <td headers="main">
