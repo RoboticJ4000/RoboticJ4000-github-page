@@ -54,7 +54,7 @@ class GearForm extends React.Component {
     static blank = <option key="blank" value="blank"/>
 
     render(){
-        function createOption(string) {
+        function createOption(string) {     // May need to edit how options for dropdown lists are created. Let capitals exist?
             const fixed = string.charAt(0).toLowerCase().concat(string.substring(1));
             
             let shortened = '';
@@ -76,10 +76,10 @@ class GearForm extends React.Component {
         let type = GearForm.type.map(createOption);
 
         let mainAb;
-        if (this.state.type === 'headgear'){
+        if (this.props.gear.type === 'headgear'){
             mainAb = stackAb.concat(GearForm.headgearAb.map(createOption));
 
-        } else if (this.state.type === 'clothing'){
+        } else if (this.props.gear.type === 'clothing'){
             mainAb = stackAb.concat(GearForm.clothingAb.map(createOption));
         
         } else {
@@ -95,46 +95,46 @@ class GearForm extends React.Component {
         }        
 
         return (
-            <form onSubmit={(event) => this.props.handleSubmit(event)}>
-                <div>
-                    <h1>{this.props.formTitle}</h1>
-
+            <form className="Form" onSubmit={(event) => this.props.handleSubmit(event)}>
+                <h1>{this.props.formTitle}</h1>
+                
+                <div className="Form-input">
                     <label>Type:</label>
                     <select name="type" value={this.props.gear.type} onChange={(event) => this.props.handleChange(event)}>
                         {type}
                     </select>
                 </div>
                 
-                <div>
+                <div className="Form-input">
                     <label>Name:</label>
                     <input type="text" name="name" value={this.props.gear.name} onChange={(event) => this.props.handleChange(event)}/>
                 </div>
                 
-                <div>
+                <div className="Form-input">
                     <label>Main Abillity:</label>
                     <select className="Main-Ab" name="main" value={this.props.gear.main} onChange={(event) => this.props.handleChange(event)}>
                         {mainAb}
                     </select>
                 </div>
                 
-                <div>
+                <div className="Form-input">
                     <label>Sub Abilities:</label>
-                    <div className="Sub-Abilities">
-                        <select className="Sub-Ab" name="sub1" value={this.props.gear.sub1} onChange={(event) => this.props.handleChange(event)}>
+                    <div className="Sub-abilities">
+                        <select className="Sub-ab" name="sub1" value={this.props.gear.sub1} onChange={(event) => this.props.handleChange(event)}>
                             {stackAb}
                         </select>
 
-                        <select className="Sub-Ab" name="sub2" value={this.props.gear.sub2} onChange={(event) => this.props.handleChange(event)}>
+                        <select className="Sub-ab" name="sub2" value={this.props.gear.sub2} onChange={(event) => this.props.handleChange(event)}>
                             {stackAb}
                         </select>
 
-                        <select className="Sub-Ab" name="sub3" value={this.props.gear.sub3} onChange={(event) => this.props.handleChange(event)}>
+                        <select className="Sub-ab" name="sub3" value={this.props.gear.sub3} onChange={(event) => this.props.handleChange(event)}>
                             {stackAb}
                         </select>
                     </div>
                 </div>
             
-                <div>
+                <div className="Form-submit">
                     <input type="submit" value={this.props.submitText} />
                     {this.props.children}
                 </div>

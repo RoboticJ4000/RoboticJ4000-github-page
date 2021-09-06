@@ -1,1 +1,100 @@
+/* TODO: Get overall styles going. */
+body {
+    background-color: darkgrey;
+    color: black;
+    padding: 1.5em;
+}
 
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: red;
+    text-align: center;
+    padding: 1.5em;
+}
+
+.App {
+    margin: auto;
+    width: 60%;
+    text-align: center;
+}
+
+.Tab-header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1em;
+}
+
+.Tab-header button {
+    background-color: #f5cdf0;
+    border: 0px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.Tab-header button:hover {
+    color: blue;
+}
+
+.Tab-header button:active {
+    background-color: #d7c3d2;
+}
+
+.Display {
+    width: 100%;
+    border: 2px solid black;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+td, th {
+    border: 1px solid black;
+}
+
+.Type-cell {
+    width: 60px;
+}
+
+.Name-cell {
+    width: 150px;
+}
+
+.Ability-cell {
+    height: 64px;
+    width: 64px;
+    align-items: center;
+}
+
+.Form {
+    display: inline-block;
+    margin: 0px auto 1em auto;
+    background-color: orange;
+    padding: 1em;
+    text-align: start;
+}
+
+.Form h1 {
+    margin: 0px;
+}
+
+.Form div.Form-input {
+    display: grid;
+    grid-template-columns: 110px 200px;
+    margin: 10px 10px 10px 0;
+}
+
+.Form div.Sub-abilities {
+    display: grid;
+}
+
+.Form div.Sub-abilities .Sub-ab {
+    margin-bottom: 10px;
+}
+
+.Form input:not([type="text"]) {
+    width: 100px;
+    margin-right: 10px;
+}

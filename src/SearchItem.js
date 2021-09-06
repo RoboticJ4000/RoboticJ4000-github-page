@@ -60,7 +60,7 @@ class SearchItem extends React.Component {
                 handleSubmit={this.handleSubmit}
                 submitText="Search"
                 allowBlank={true}>
-                <button onClick={this.resetForm}>Reset</button>
+                <input type="button" onClick={this.resetForm} value="Reset"/>
             </GearForm>
         );
     }

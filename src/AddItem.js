@@ -24,7 +24,7 @@ class AddItem extends React.Component {
         });
     }
 
-    handleSubmit(event) {
+    handleSubmit(event) {       // May need to edit how name is saved into database.
         event.preventDefault();
 
         if (this.state.name) {

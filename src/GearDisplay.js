@@ -22,19 +22,24 @@ class GearDisplay extends React.Component {
         };
 
         return (
-            <tr style={this.props.selected ? selected : notSelected} onClick={this.onClick}>
-                <td headers="type">{this.props.gear.type}</td>
-                <td headers="name">{this.props.gear.name}</td>
-                <td headers="main">
+            <tr className="Gear-display" style={this.props.selected ? selected : notSelected} onClick={this.onClick}>
+                <td className="Type-cell" headers="type">{this.props.gear.type}</td>
+
+                <td className="Name-cell" headers="name">{this.props.gear.name}</td>
+
+                <td className="Ability-cell" headers="main">
                     <img src={process.env.PUBLIC_URL + "/ability_icons/" + this.props.gear.main + ".png"} alt={this.props.gear.main}/>
                 </td>
-                <td headers="sub1">
+
+                <td className="Ability-cell" headers="sub1">
                     <img src={process.env.PUBLIC_URL + "/ability_icons/" + this.props.gear.sub1 + ".png"} alt={this.props.gear.sub1}/>
                 </td>
-                <td headers="sub2">
+
+                <td className="Ability-cell" headers="sub2">
                     <img src={process.env.PUBLIC_URL + "/ability_icons/" + this.props.gear.sub2 + ".png"} alt={this.props.gear.sub2}/>
                 </td>
-                <td headers="sub3">
+
+                <td className="Ability-cell" headers="sub3">
                     <img src={process.env.PUBLIC_URL + "/ability_icons/" + this.props.gear.sub3 + ".png"} alt={this.props.gear.sub3}/>
                 </td>
             </tr>

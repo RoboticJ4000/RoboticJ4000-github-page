@@ -1,3 +1,4 @@
+import './App.css';
 import React from 'react';
 import GearDisplay from './GearDisplay.js';
 
@@ -13,15 +14,15 @@ class Display extends React.Component {
             selectGear={this.props.selectGear} selected={gearObj.name === this.props.gearSelected}/>);
 
         return (
-            <table>
+            <table className="Display">
                 <thead>
                     <tr>
-                        <th headers="type">Type</th>
-                        <th headers="name">Name</th>
-                        <th headers="main">Main</th>
-                        <th headers="sub1">Sub 1</th>
-                        <th headers="sub2">Sub 2</th>
-                        <th headers="sub3">Sub 3</th>
+                        <th className="Type-cell" headers="type">Type</th>
+                        <th className="Name-cell" headers="name">Name</th>
+                        <th className="Ability-cell" headers="main">Main</th>
+                        <th className="Ability-cell" headers="sub1">Sub 1</th>
+                        <th className="Ability-cell" headers="sub2">Sub 2</th>
+                        <th className="Ability-cell" headers="sub3">Sub 3</th>
                     </tr>
                 </thead>
 

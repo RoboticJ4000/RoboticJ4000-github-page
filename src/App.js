@@ -56,6 +56,7 @@ class App extends React.Component {
             if (!db.objectStoreNames.contains('gears')) {
                 let gears = db.createObjectStore('gears', {keyPath: 'name'});
                 gears.createIndex('nameIndex', 'name', {unique: true});
+                // gears.createIndex('typeIndex', 'type');
             }
         }
     
@@ -122,7 +123,13 @@ class App extends React.Component {
 
         if (Object.keys(this.state.gearFilter).length === 0) {
             func = function(db) {
-                // Sort by gear type?
+                // TODO: Sort by gear type? Get a proper sort going?
+                /*
+                 * Could do:
+                 * 3 separate objectStores, one for each of the types of gear.
+                 * Use indexes to separate the types of gear, and call each type separately.
+                 */
+
                 let gears = db.transaction('gears', 'readonly').objectStore('gears');
     
                 let request = gears.getAll();
@@ -143,6 +150,7 @@ class App extends React.Component {
                 let filter = this.state.gearFilter;
                 let array = [];
 
+                // May need to change what the cursor is on (one for each type of gear?)
                 let request = gears.openCursor();
 
                 request.onsuccess = function() {    // Called for each cursor item.
@@ -187,24 +195,25 @@ class App extends React.Component {
     }
   
     render() {
-        // TODO: Alerts for each action.
-        // TODO: Select gear via click, remove (and maybe edit) gear button.
 
         return (
             <div className="App">
-                <div>
-                    <button onClick={this.toggleAddItem}>Add Gear</button>
-                    <button onClick={this.toggleSearchItem}>Search Gear</button>
-                    <button onClick={this.removeGear}>Remove Selected Gear</button>
-                    <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
-                </div>
-                
-                <div>
-                    {this.state.showAddItem && <AddItem addGear={this.addGear} />}
-                    {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
-                </div>
-                
-                <Display gearArray={this.state.gearArray} selectGear={this.selectGear} gearSelected={this.state.gearSelected} />
+                <body>
+                    <div className="Tab-header">
+                        <button onClick={this.toggleAddItem}>Add Gear</button>
+                        <button onClick={this.toggleSearchItem}>Search Gear</button>
+                        <button onClick={this.removeGear}>Remove Selected Gear</button>
+                        <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
+                    </div>
+                    
+                    <div>
+                        {this.state.showAddItem && <AddItem addGear={this.addGear} />}
+                        {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
+                    </div>
+                    
+                    <Display gearArray={this.state.gearArray} selectGear={this.selectGear} gearSelected={this.state.gearSelected} />
+
+                </body>
 
                 <footer>
                     This React app is incomplete. Development is ongoing.<br/>
