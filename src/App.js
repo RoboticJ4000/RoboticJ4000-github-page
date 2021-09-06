@@ -56,7 +56,7 @@ class App extends React.Component {
             if (!db.objectStoreNames.contains('gears')) {
                 let gears = db.createObjectStore('gears', {keyPath: 'name'});
                 gears.createIndex('nameIndex', 'name', {unique: true});
-                // gears.createIndex('typeIndex', 'type');
+                gears.createIndex('typeIndex', 'type');
             }
         }
     
@@ -67,6 +67,10 @@ class App extends React.Component {
         openRequest.onsuccess = function() {
             let db = openRequest.result;
             func.apply(thisArg, [db]);
+        }
+
+        openRequest.onblocked = function() {
+            window.alert('Error. Please delete the "gears" IndexedDB database.');
         }
     }
 
@@ -123,58 +127,117 @@ class App extends React.Component {
 
         if (Object.keys(this.state.gearFilter).length === 0) {
             func = function(db) {
-                // TODO: Sort by gear type? Get a proper sort going?
-                /*
-                 * Could do:
-                 * 3 separate objectStores, one for each of the types of gear.
-                 * Use indexes to separate the types of gear, and call each type separately.
-                 */
+                let transaction = db.transaction('gears', 'readonly');
+                let gears = transaction.objectStore('gears');
+                let index = gears.index('typeIndex');
 
-                let gears = db.transaction('gears', 'readonly').objectStore('gears');
+                let requestHeadgear = index.getAll('headgear');
+                let requestClothing = index.getAll('clothing');
+                let requestShoes = index.getAll('shoes');
+
+                let headgears;
+                let clothing;
+                let shoes;
     
-                let request = gears.getAll();
-    
-                request.onerror = function() {
-                    console.error('Failed to retrieve all gear', request.error);
+                requestHeadgear.onsuccess = function() {
+                    headgears = requestHeadgear.result;
                 }
-    
-                request.onsuccess = function() {
-                    context.setState({gearArray: request.result});
+
+                requestClothing.onsuccess = function() {
+                    clothing = requestClothing.result;
+                }
+
+                requestShoes.onsuccess = function() {
+                    shoes = requestShoes.result;
+                }
+
+                transaction.oncomplete = function() {
+                    if (headgears && clothing && shoes){
+                        let array = headgears.concat(clothing).concat(shoes);
+                        context.setState({gearArray: array});
+                    
+                    } else {
+                        console.log('Error retrieving from index.');
+                    }
                 }
             }
 
         } else {
-            func = function(db) {
-                let gears = db.transaction('gears', 'readonly').objectStore('gears');
+            // Alternatively, just use array.filter(function) on the array produced in the above
+            // if code block.
+            let filter = this.state.gearFilter;
+            let array = [];
+
+            let cursorFunction = function(request) {
+                let cursor = request.result;
                 
-                let filter = this.state.gearFilter;
-                let array = [];
+                if (cursor) {   // A 'hasNext' type of deal.
+                    let gear = cursor.value;
+                    let subs = [gear.sub1, gear.sub2, gear.sub3];
 
-                // May need to change what the cursor is on (one for each type of gear?)
-                let request = gears.openCursor();
-
-                request.onsuccess = function() {    // Called for each cursor item.
-                    let cursor = request.result;
-                    
-                    if (cursor) {   // A 'hasNext' type of deal.
-                        let gear = cursor.value;
-                        let subs = [gear.sub1, gear.sub2, gear.sub3];
-
-                        if (
-                            (filter.type === 'blank' || gear.type === filter.type) &&
-                            (!filter.name || gear.name.includes(filter.name)) &&
-                            (filter.main === 'blank' || gear.main === filter.main) &&
-                            (filter.sub1 === 'blank' || subs.includes(filter.sub1)) &&
-                            (filter.sub2 === 'blank' || subs.includes(filter.sub2)) &&
-                            (filter.sub3 === 'blank' || subs.includes(filter.sub3))
-                        ) {
-                            array.push(gear);
-                        }
-
-                        cursor.continue();
-                    } else {
-                        context.setState({gearArray: array});
+                    if (
+                        (!filter.name || gear.name.includes(filter.name)) &&
+                        (filter.main === 'blank' || gear.main === filter.main) &&
+                        (filter.sub1 === 'blank' || subs.includes(filter.sub1)) &&
+                        (filter.sub2 === 'blank' || subs.includes(filter.sub2)) &&
+                        (filter.sub3 === 'blank' || subs.includes(filter.sub3))
+                    ) {
+                        array.push(gear);
                     }
+
+                    cursor.continue();
+                }
+            }
+
+            func = function(db) {
+                let transaction = db.transaction('gears', 'readonly');
+                let gears = transaction.objectStore('gears');
+                let index = gears.index('typeIndex');
+                
+
+                if (filter.type === 'blank' || filter.type === 'headgear') {
+                    let requestHeadgear = index.openCursor('headgear');
+                    requestHeadgear.onsuccess = function() {
+                        cursorFunction(requestHeadgear);
+                    }
+                }
+
+                transaction.oncomplete = function() {
+                    context.queryDB(funcClothing, context);     // "Sync" call to clothing cursor.
+                }
+            }
+
+            let funcClothing = function(db) {
+                let transaction = db.transaction('gears', 'readonly');
+                let gears = transaction.objectStore('gears');
+                let index = gears.index('typeIndex');
+
+                if (filter.type === 'blank' || filter.type === 'clothing') {
+                    let requestClothing = index.openCursor('clothing');
+                    requestClothing.onsuccess = function() {
+                        cursorFunction(requestClothing);
+                    }
+                }
+
+                transaction.oncomplete = function() {
+                    context.queryDB(funcShoes, context);        // "Sync" call to shoes cursor.
+                }
+            }
+
+            let funcShoes = function(db) {
+                let transaction = db.transaction('gears', 'readonly');
+                let gears = transaction.objectStore('gears');
+                let index = gears.index('typeIndex');
+
+                if (filter.type === 'blank' || filter.type === 'shoes') {
+                    let requestShoes = index.openCursor('shoes');
+                    requestShoes.onsuccess = function() {
+                        cursorFunction(requestShoes);
+                    }
+                }
+
+                transaction.oncomplete = function() {
+                    context.setState({gearArray: array});       // Set state.
                 }
             }
         }
@@ -198,27 +261,31 @@ class App extends React.Component {
 
         return (
             <div className="App">
-                <body>
-                    <div className="Tab-header">
-                        <button onClick={this.toggleAddItem}>Add Gear</button>
-                        <button onClick={this.toggleSearchItem}>Search Gear</button>
-                        <button onClick={this.removeGear}>Remove Selected Gear</button>
-                        <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
-                    </div>
-                    
-                    <div>
-                        {this.state.showAddItem && <AddItem addGear={this.addGear} />}
-                        {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
-                    </div>
-                    
-                    <Display gearArray={this.state.gearArray} selectGear={this.selectGear} gearSelected={this.state.gearSelected} />
+                <div className="Tab-header">
+                    <button onClick={this.toggleAddItem}>Add Gear</button>
+                    <button onClick={this.toggleSearchItem}>Search Gear</button>
+                    <button onClick={this.removeGear}>Remove Selected Gear</button>
+                    <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
+                </div>
+                
+                <div>
+                    {this.state.showAddItem && <AddItem addGear={this.addGear} />}
+                    {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
+                </div>
+                
+                <Display gearArray={this.state.gearArray} selectGear={this.selectGear} gearSelected={this.state.gearSelected} />
 
-                </body>
 
                 <footer>
-                    This React app is incomplete. Development is ongoing.<br/>
+                    <p className="Status">
+                        This React app is at a stable build. Development may or may not be continuing.
+                    </p>
                     <br/>
-                    This React app is in no way affilated with Nintendo. None of the images used in this app are owned by the creator.
+                    <p className="Disclaimer">
+                        This React app is in no way affilated with Nintendo.
+                        <br/>
+                        All product names, logos, and brands are property of their respective owners.
+                    </p>
                 </footer>
             </div>
         );

@@ -19,12 +19,18 @@ class AddItem extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
+        if (event.target.name === 'name') {
+            this.setState({
+                name: event.target.value.toUpperCase()      // Keep text as uppercase.
+            });
+        } else {
+            this.setState({
+                [event.target.name]: event.target.value
+            });
+        }
     }
 
-    handleSubmit(event) {       // May need to edit how name is saved into database.
+    handleSubmit(event) {
         event.preventDefault();
 
         if (this.state.name) {

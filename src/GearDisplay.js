@@ -21,9 +21,12 @@ class GearDisplay extends React.Component {
             color: 'black'
         };
 
+        const type = this.props.gear.type;
+        const typeCapitalized = type.charAt(0).toUpperCase().concat(type.substring(1));
+
         return (
             <tr className="Gear-display" style={this.props.selected ? selected : notSelected} onClick={this.onClick}>
-                <td className="Type-cell" headers="type">{this.props.gear.type}</td>
+                <td className="Type-cell" headers="type">{typeCapitalized}</td>
 
                 <td className="Name-cell" headers="name">{this.props.gear.name}</td>
 

@@ -22,15 +22,19 @@ class SearchItem extends React.Component {
     };
 
     handleChange(event){
-        this.setState({
-            [event.target.name]: event.target.value
-        });
+        if (event.target.name === 'name') {
+            this.setState({
+                name: event.target.value.toUpperCase()      // Keep text as uppercase.
+            });
+        } else {
+            this.setState({
+                [event.target.name]: event.target.value
+            });
+        }
     }
 
     handleSubmit(event){
         event.preventDefault();
-        
-        console.log(this.state);
 
         // Check if submitted values are the same as 'blank' values.
         let filterValues = Object.values(this.state);
@@ -50,6 +54,7 @@ class SearchItem extends React.Component {
 
     resetForm(){
         this.setState(SearchItem.initialState);
+        this.props.setFilter({});
     }
 
     render(){
