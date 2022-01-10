@@ -1,6 +1,7 @@
 import './App.css';
 import AddItem from './AddItem.js';
-import SearchItem from './SearchItem.js'
+import SearchItem from './SearchItem.js';
+import ImportFile from './ImportFile.js';
 import Display from './Display.js';
 import React from 'react';
 
@@ -10,6 +11,7 @@ class App extends React.Component {
         this.state = {
             showAddItem: false,
             showSearchItem: false,
+            showFileIO: false,
             gearFilter: {},
             gearArray: [],
             gearSelected: undefined
@@ -17,12 +19,14 @@ class App extends React.Component {
 
         this.toggleAddItem = this.toggleAddItem.bind(this);
         this.toggleSearchItem = this.toggleSearchItem.bind(this);
+        this.toggleFileIO = this.toggleFileIO.bind(this);
         this.selectGear = this.selectGear.bind(this);
         this.resetDatabase = this.resetDatabase.bind(this);
         this.queryDB = this.queryDB.bind(this);
         this.addGear = this.addGear.bind(this);
         this.setFilter = this.setFilter.bind(this);
         this.removeGear = this.removeGear.bind(this);
+        this.importFile = this.importFile.bind(this);
         this.displayGear = this.displayGear.bind(this);
     }
 
@@ -33,14 +37,24 @@ class App extends React.Component {
     toggleAddItem() {
         this.setState( {
             showAddItem: !this.state.showAddItem,
-            showSearchItem: false
+            showSearchItem: false,
+            showFileIO: false
         } );
     }
 
     toggleSearchItem(){
         this.setState( {
             showAddItem: false,
-            showSearchItem: !this.state.showSearchItem
+            showSearchItem: !this.state.showSearchItem,
+            showFileIO: false
+        } );
+    }
+
+    toggleFileIO(){
+        this.setState( {
+            showAddItem: false,
+            showSearchItem: false,
+            showFileIO: !this.state.showFileIO
         } );
     }
 
@@ -119,6 +133,48 @@ class App extends React.Component {
             window.alert('No gear was selected.\nNothing was removed from the database.')
         }
         
+    }
+
+    // TODO: double-check or refine
+    importFile(file) {
+        // Use FileReader to read the File object.
+        let reader = new FileReader();
+        let dataString;
+        let thisArg = this;
+
+        reader.onload = function(){
+            dataString = reader.result;
+
+            // Translate from JSON to objects (JSON.parse). Contain in array.
+            let array = JSON.parse(dataString);     // Will this be brought over to function?
+
+            // Clear database.
+            thisArg.resetDatabase();
+
+            // Insert the objects, contained in array. Do within one database-open operation preferably.
+            let func = function(db) {
+                let transaction = db.transaction('gears', 'readwrite');
+                let gears = transaction.objectStore('gears');
+
+                for (let gear of array) {       // Will the array be brought over? Yes
+                    let request = gears.add(gear);
+
+                    request.onerror = function() {
+                        window.alert('Error importing objects into database...');
+                        transaction.abort();    // Keep or remove?
+                    }
+                }
+
+                transaction.oncomplete = function() {
+                    window.alert('Import successful');
+                }
+            };
+
+            thisArg.queryDB(func, this);
+            thisArg.displayGear();
+        };        
+        
+        reader.readAsText(file); 
     }
 
     displayGear() {
@@ -259,11 +315,18 @@ class App extends React.Component {
   
     render() {
 
+        // Consider adding a unique identifier code to ensure input file is acceptable?
+        // Perhaps made up or unique file extension? Or first object? etc.
+        let link = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.state.gearArray));
+        
+
+        // TODO: update export link to a button? perhaps just in CSS style?
         return (
             <div className="App">
                 <div className="Tab-header">
                     <button onClick={this.toggleAddItem}>Add Gear</button>
                     <button onClick={this.toggleSearchItem}>Search Gear</button>
+                    <button onClick={this.toggleFileIO}>File IO</button>
                     <button onClick={this.removeGear}>Remove Selected Gear</button>
                     <button onClick={this.resetDatabase}>Resetti Spaghetti</button>
                 </div>
@@ -271,6 +334,13 @@ class App extends React.Component {
                 <div>
                     {this.state.showAddItem && <AddItem addGear={this.addGear} />}
                     {this.state.showSearchItem && <SearchItem setFilter={this.setFilter} />}
+                    {this.state.showFileIO && 
+                        <div>
+                            <ImportFile importFile={this.importFile}>
+                                <a href={link} download="gearArray.json">Export as .json</a>
+                            </ImportFile>
+                        </div>
+                    }
                 </div>
                 
                 <Display gearArray={this.state.gearArray} selectGear={this.selectGear} gearSelected={this.state.gearSelected} />
