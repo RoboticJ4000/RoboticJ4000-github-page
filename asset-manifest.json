@@ -1,22 +1,15 @@
 {
   "files": {
-    "main.css": "/jjsoong-github-page/static/css/main.e634bfbc.chunk.css",
-    "main.js": "/jjsoong-github-page/static/js/main.266966c0.chunk.js",
-    "main.js.map": "/jjsoong-github-page/static/js/main.266966c0.chunk.js.map",
-    "runtime-main.js": "/jjsoong-github-page/static/js/runtime-main.e7622606.js",
-    "runtime-main.js.map": "/jjsoong-github-page/static/js/runtime-main.e7622606.js.map",
-    "static/js/2.a9ebbac8.chunk.js": "/jjsoong-github-page/static/js/2.a9ebbac8.chunk.js",
-    "static/js/2.a9ebbac8.chunk.js.map": "/jjsoong-github-page/static/js/2.a9ebbac8.chunk.js.map",
-    "static/js/3.ff2b8763.chunk.js": "/jjsoong-github-page/static/js/3.ff2b8763.chunk.js",
-    "static/js/3.ff2b8763.chunk.js.map": "/jjsoong-github-page/static/js/3.ff2b8763.chunk.js.map",
+    "main.css": "/jjsoong-github-page/static/css/main.b249898c.css",
+    "main.js": "/jjsoong-github-page/static/js/main.97122af6.js",
+    "static/js/787.9a6eb248.chunk.js": "/jjsoong-github-page/static/js/787.9a6eb248.chunk.js",
     "index.html": "/jjsoong-github-page/index.html",
-    "static/css/main.e634bfbc.chunk.css.map": "/jjsoong-github-page/static/css/main.e634bfbc.chunk.css.map",
-    "static/js/2.a9ebbac8.chunk.js.LICENSE.txt": "/jjsoong-github-page/static/js/2.a9ebbac8.chunk.js.LICENSE.txt"
+    "main.b249898c.css.map": "/jjsoong-github-page/static/css/main.b249898c.css.map",
+    "main.97122af6.js.map": "/jjsoong-github-page/static/js/main.97122af6.js.map",
+    "787.9a6eb248.chunk.js.map": "/jjsoong-github-page/static/js/787.9a6eb248.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.e7622606.js",
-    "static/js/2.a9ebbac8.chunk.js",
-    "static/css/main.e634bfbc.chunk.css",
-    "static/js/main.266966c0.chunk.js"
+    "static/css/main.b249898c.css",
+    "static/js/main.97122af6.js"
   ]
 }
